@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">HabbitTracker</string>
+    <string name="greeting">Good Morning!</string>
+</resources>
