@@ -5,7 +5,6 @@
 - `onCreate()` runs when the screen is created. Android calls it automatically.
 - `setContentView(R.layout.activity_main)` connects this screen to its XML layout.
 - The edge-to-edge and insets lines come from the template. They add padding so content doesn't hide under the status and navigation bars.
-- `import` tells Kotlin where a class lives (e.g. `import android.util.Log`). Without it, the class shows "Unresolved reference". Alt+Enter adds it automatically.
 
 ## activity_main.xml
 - Defines the screen's UI (what the user sees) in XML.
@@ -80,6 +79,3 @@
 - Call this after `setContentView`, because the layout must be loaded first.
 - `setOnClickListener { ... }` runs code when the view is tapped.
 - `textView.text = "Taps: $count"` changes the displayed text. `$count` inserts a variable into a string.
-
-## Kotlin exercises
-(add later this week)
