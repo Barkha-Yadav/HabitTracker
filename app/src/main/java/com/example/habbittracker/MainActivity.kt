@@ -28,6 +28,8 @@ class MainActivity : AppCompatActivity() {
             count++;
             textView.text = "Taps: $count"
         }
+
+        logSampleHabits()
     }
 
     override fun onStart(){
@@ -49,5 +51,23 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy(){
         super.onDestroy()
         Log.d("MainActivity","onDestroy is called")
+    }
+
+    private fun logSampleHabits(){
+        val habits = listOf(
+            Habit("Drink Water"),
+            Habit("Read 10 pages",true),
+            Habit("Walk"),
+            Habit("Meditate",true)
+        )
+        for((index,habit) in habits.withIndex()){
+            Log.d("HabitDebug","${index+1}. ${habit.name} - done: ${habit.isCompleted}")
+        }
+
+        val doneCount = habits.count{it.isCompleted}
+        Log.d("HabitDebug","Completed $doneCount of ${habits.size}")
+
+        val notCompletedHabits = habits.filter{!it.isCompleted}
+        Log.d("HabitDebug","Not completed habits: $notCompletedHabits")
     }
 }
