@@ -12,10 +12,15 @@ Learn Kotlin and basic Android development (XML layouts, Activity lifecycle, Git
 - Git
 
 ## How to run
-1. Clone the repo: `git clone https://github.com/Barkha-Yadav/HabitTracker.git`
-2. Open the folder in Android Studio and wait for Gradle sync to finish.
-3. Select a device (phone or emulator) in the toolbar.
-4. Click Run.
+
+1. Clone the repository: `git clone https://github.com/Barkha-Yadav/HabitTracker.git`
+2. Open the project in Android Studio and wait for the Gradle sync to finish.
+3. On your phone, turn on **Developer options** and then **USB debugging**.
+4. Connect the phone to the computer with a USB cable and tap **Allow** on the phone when it asks to trust the computer.
+5. Select your phone in the device drop-down at the top of Android Studio.
+6. Click the green **Run** button.
+
+Tested on: vivo V2240, Android 15 (API 35), using USB debugging.
 
 ## Features
 Done so far:
