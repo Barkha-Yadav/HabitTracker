@@ -112,11 +112,17 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        for(habit in habits){
+        for((index,habit) in habits.withIndex()){
             val row = TextView(this)
             row.text = if(habit.isCompleted) "✔ ${habit.name}" else "○ ${habit.name}"
             row.textSize = 18f
             row.setPadding(0,12,0,12)
+
+            row.setOnClickListener {
+                habits[index] = habit.copy(isCompleted = !habit.isCompleted)
+                showHabits()
+            }
+
             container.addView(row)
         }
     }
