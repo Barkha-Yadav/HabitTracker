@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">HabbitTracker</string>
     <string name="greeting">Good Morning!</string>
+    <string name="app_title">My Habits</string>
+    <string name="habit_name_hint">Enter habit name</string>
+    <string name="add_habit">Add Habit</string>
 </resources>
