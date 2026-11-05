@@ -3,6 +3,7 @@ package com.example.habbittracker
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -13,6 +14,10 @@ import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
     private val habits = mutableListOf<Habit>()
+    private var editingIndex: Int? = null
+    private lateinit var habitNameInput: EditText
+    private lateinit var addHabitButton: Button
+    private lateinit var messageText: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("MainActivity", "onCreate() is called")
@@ -24,39 +29,45 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-//        val textView = findViewById<TextView>(R.id.greetingText)
-//        textView.setOnClickListener{
-//            count++;
-//            textView.text = "Taps: $count"
-//        }
-
         habits.add(Habit("Drink water"))
         habits.add(Habit("Read 10 pages"))
         habits.add(Habit("Walk 15 minutes",true))
         habits.add(Habit("Sleep 8 hours",true))
         Log.d("HabitDebug","Habits in the list: ${habits.size}")
+
+        habitNameInput = findViewById<EditText>(R.id.habitNameInput)
+        addHabitButton = findViewById<Button>(R.id.addHabitButton)
+        messageText = findViewById<TextView>(R.id.messageText)
         showHabits()
 
-        val habitNameInput = findViewById<EditText>(R.id.habitNameInput)
-        val addHabitButton = findViewById<Button>(R.id.addHabitButton)
-        val messageText = findViewById<TextView>(R.id.messageText)
-
         addHabitButton.setOnClickListener {
-            val name = habitNameInput.text.toString().trim()
+            val name = habitNameInput.text.toString().trim().replace(Regex("\\s+")," ")
+            val editIndex = editingIndex
+
             if(name.isBlank()){
                 messageText.text = "Habit name cannot be blank"
             }
-            else if(habits.any{it.name.equals(name,ignoreCase = true)}){
+            else if(habits.withIndex().any{(i,h) -> i!=editIndex && h.name.equals(name,ignoreCase = true)}){
                 messageText.text = "This habit already exists!"
             }
             else if(name.length<3){
                 messageText.text = "Habit name is too short"
             }
             else{
-                habits.add(Habit(name))
-                showHabits()
-                messageText.text = "Added: $name"
-                Log.d("HabitDebug","Habit added: $name, total: ${habits.size}")
+                if(editIndex == null) {
+                    habits.add(Habit(name))
+                    showHabits()
+                    messageText.text = "Added: $name"
+                    Log.d("HabitDebug", "Habit added: $name, total: ${habits.size}")
+                }
+                else{
+                    habits[editIndex] = habits[editIndex].copy(name = name)
+                    showHabits()
+                    messageText.text = "Edited: $name"
+                    Log.d("HabitDebug", "Habit edited: $name, total: ${habits.size}")
+                    editingIndex = null
+                    addHabitButton.text = "Add"
+                }
                 habitNameInput.text.clear()
             }
         }
@@ -113,17 +124,45 @@ class MainActivity : AppCompatActivity() {
         }
 
         for((index,habit) in habits.withIndex()){
-            val row = TextView(this)
-            row.text = if(habit.isCompleted) "✔ ${habit.name}" else "○ ${habit.name}"
-            row.textSize = 18f
-            row.setPadding(0,12,0,12)
+            val row = LinearLayout(this)
+            row.orientation = LinearLayout.HORIZONTAL
 
-            row.setOnClickListener {
-                habits[index] = habit.copy(isCompleted = !habit.isCompleted)
+            val checkbox = CheckBox(this)
+            checkbox.text = habit.name
+            checkbox.textSize = 18f
+            checkbox.isChecked = habit.isCompleted
+            checkbox.setPadding(0,12,0,12)
+            checkbox.layoutParams = LinearLayout.LayoutParams(0,LinearLayout.LayoutParams.WRAP_CONTENT,1f)
+
+            checkbox.setOnClickListener {
+                habits[index] = habit.copy(isCompleted = checkbox.isChecked)
                 showHabits()
             }
 
+            val deleteButton = Button(this)
+            deleteButton.text = "Delete"
+            deleteButton.setOnClickListener {
+                habits.removeAt(index)
+                editingIndex = null
+                addHabitButton.text = "Add"
+                messageText.text = "Deleted: ${habit.name}"
+                habitNameInput.text.clear()
+                showHabits()
+            }
+
+            val editButton = Button(this)
+            editButton.text = "Edit"
+            editButton.setOnClickListener{
+                habitNameInput.setText(habit.name)
+                editingIndex = index
+                addHabitButton.text = "Save"
+            }
+
+            row.addView(editButton)
+            row.addView(checkbox)
+            row.addView(deleteButton)
             container.addView(row)
         }
     }
+
 }

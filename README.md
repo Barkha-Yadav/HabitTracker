@@ -25,17 +25,16 @@ Tested on: vivo V2240, Android 15 (API 35), using USB debugging.
 ## Features
 Done so far:
 - Habit data class (name, isCompleted)
-- Sample habits printed to Logcat
+- Habit list shown on screen, with an empty state when there are no habits
+- Add a habit (blank names, names shorter than 3 characters and duplicate names are rejected)
+- Mark / unmark a habit as done today using a CheckBox
 
 Planned:
-- Show the habit list on screen
-- Add a habit (blank names rejected)
-- Mark / unmark a habit as done today
 - Edit and delete a habit
 - Local storage (once the basics are stable)
 
 ## Known limitations
-- Data is in memory only, so it is lost when the app closes
+- Habits are stored in memory only. Rotating the device or closing the app resets the list to the sample data.
 - No login, cloud sync or notifications (not required in Month 1)
 
 ## Tech
