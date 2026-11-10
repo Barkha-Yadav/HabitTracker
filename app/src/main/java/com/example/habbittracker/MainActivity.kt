@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
@@ -18,6 +19,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var habitNameInput: EditText
     private lateinit var addHabitButton: Button
     private lateinit var messageText: TextView
+    private lateinit var storage: HabitStorage
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("MainActivity", "onCreate() is called")
@@ -29,10 +31,8 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        habits.add(Habit("Drink water"))
-        habits.add(Habit("Read 10 pages"))
-        habits.add(Habit("Walk 15 minutes",true))
-        habits.add(Habit("Sleep 8 hours",true))
+        storage = HabitStorage(this)
+        habits.addAll(storage.load())
         Log.d("HabitDebug","Habits in the list: ${habits.size}")
 
         habitNameInput = findViewById<EditText>(R.id.habitNameInput)
@@ -56,12 +56,14 @@ class MainActivity : AppCompatActivity() {
             else{
                 if(editIndex == null) {
                     habits.add(Habit(name))
+                    storage.save(habits)
                     showHabits()
                     messageText.text = "Added: $name"
                     Log.d("HabitDebug", "Habit added: $name, total: ${habits.size}")
                 }
                 else{
                     habits[editIndex] = habits[editIndex].copy(name = name)
+                    storage.save(habits)
                     showHabits()
                     messageText.text = "Edited: $name"
                     Log.d("HabitDebug", "Habit edited: $name, total: ${habits.size}")
@@ -71,46 +73,30 @@ class MainActivity : AppCompatActivity() {
                 habitNameInput.text.clear()
             }
         }
-        logSampleHabits()
     }
 
     override fun onStart(){
         super.onStart()
-        Log.d("MainActivity", "onStart is called")
+        Log.d("MainActivity","onStart() is called")
     }
     override fun onResume(){
         super.onResume()
-        Log.d("MainActivity","onResume is called")
+        Log.d("MainActivity","onResume() is called")
+        habits.clear()
+        habits.addAll(storage.load())
+        showHabits()
     }
     override fun onPause(){
         super.onPause()
-        Log.d("MainActivity","onPause is called")
+        Log.d("MainActivity","onPause() is called")
     }
     override fun onStop(){
         super.onStop()
-        Log.d("MainActivity","onStop is called")
+        Log.d("MainActivity","onStop() is called")
     }
     override fun onDestroy(){
         super.onDestroy()
-        Log.d("MainActivity","onDestroy is called")
-    }
-
-    private fun logSampleHabits(){
-        val sampleHabits = listOf(
-            Habit("Drink Water"),
-            Habit("Read 10 pages",true),
-            Habit("Walk"),
-            Habit("Meditate",true)
-        )
-        for((index,habit) in sampleHabits.withIndex()){
-            Log.d("HabitDebug","${index+1}. ${habit.name} - done: ${habit.isCompleted}")
-        }
-
-        val doneCount = sampleHabits.count{it.isCompleted}
-        Log.d("HabitDebug","Completed $doneCount of ${sampleHabits.size}")
-
-        val notCompletedHabits = sampleHabits.filter{!it.isCompleted}
-        Log.d("HabitDebug","Not completed habits: $notCompletedHabits")
+        Log.d("MainActivity","onDestroy() is called")
     }
 
     private fun showHabits(){
@@ -119,6 +105,7 @@ class MainActivity : AppCompatActivity() {
         if(habits.isEmpty()){
             val empty = TextView(this)
             empty.text = "No habits yet! Add your first one!"
+            empty.setTextColor(ContextCompat.getColor(this,R.color.ink))
             container.addView(empty)
             return
         }
@@ -130,12 +117,15 @@ class MainActivity : AppCompatActivity() {
             val checkbox = CheckBox(this)
             checkbox.text = habit.name
             checkbox.textSize = 18f
+            checkbox.setTextColor(ContextCompat.getColor(this,R.color.ink))
             checkbox.isChecked = habit.isCompleted
             checkbox.setPadding(0,12,0,12)
             checkbox.layoutParams = LinearLayout.LayoutParams(0,LinearLayout.LayoutParams.WRAP_CONTENT,1f)
 
             checkbox.setOnClickListener {
-                habits[index] = habit.copy(isCompleted = checkbox.isChecked)
+                habits[index] = habit.copy(isCompleted = checkbox.isChecked,
+                    completedDate = if(checkbox.isChecked) todayString() else "")
+                storage.save(habits)
                 showHabits()
             }
 
@@ -143,6 +133,7 @@ class MainActivity : AppCompatActivity() {
             deleteButton.text = "Delete"
             deleteButton.setOnClickListener {
                 habits.removeAt(index)
+                storage.save(habits)
                 editingIndex = null
                 addHabitButton.text = "Add"
                 messageText.text = "Deleted: ${habit.name}"

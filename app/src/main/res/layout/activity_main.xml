@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
+    android:background = "@color/paper"
     >
 
     <TextView
@@ -13,7 +14,8 @@
         android:layout_height="wrap_content"
         android:text="@string/app_title"
         android:textSize="30sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textColor="@color/ink"/>
 
     <EditText
         android:id="@+id/habitNameInput"
@@ -23,21 +25,23 @@
         android:layout_marginTop="16dp"
         android:hint="@string/habit_name_hint"
         android:inputType="text"
-        android:autofillHints="name"/>
+        android:autofillHints="name"
+        android:textColor="@color/ink"/>
 
     <Button
         android:id="@+id/addHabitButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/add_habit"/>
+        android:text="@string/add_habit" />
 
     <TextView
         android:id="@+id/messageText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="" />
+        android:text=""
+        android:textColor="@color/ink"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -49,7 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="#EEEEEE"
+            android:background="@color/mint"
             android:padding="8dp" />
 
     </ScrollView>
