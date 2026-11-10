@@ -4,4 +4,5 @@
     <string name="app_title">My Habits</string>
     <string name="habit_name_hint">Enter habit name</string>
     <string name="add_habit">Add Habit</string>
+    <string name="cancel">Cancel</string>
 </resources>

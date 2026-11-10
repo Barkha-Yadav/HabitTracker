@@ -28,12 +28,27 @@
         android:autofillHints="name"
         android:textColor="@color/ink"/>
 
-    <Button
-        android:id="@+id/addHabitButton"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/add_habit" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/addHabitButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_habit" />
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/cancel"
+            android:visibility="gone"/>
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/messageText"

@@ -12,12 +12,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import android.view.View
 
 class MainActivity : AppCompatActivity() {
     private val habits = mutableListOf<Habit>()
     private var editingIndex: Int? = null
     private lateinit var habitNameInput: EditText
     private lateinit var addHabitButton: Button
+    private lateinit var cancelButton: Button
     private lateinit var messageText: TextView
     private lateinit var storage: HabitStorage
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         habitNameInput = findViewById<EditText>(R.id.habitNameInput)
         addHabitButton = findViewById<Button>(R.id.addHabitButton)
         messageText = findViewById<TextView>(R.id.messageText)
+        cancelButton = findViewById<Button>(R.id.cancelButton)
         showHabits()
 
         addHabitButton.setOnClickListener {
@@ -60,6 +63,7 @@ class MainActivity : AppCompatActivity() {
                     showHabits()
                     messageText.text = "Added: $name"
                     Log.d("HabitDebug", "Habit added: $name, total: ${habits.size}")
+                    habitNameInput.text.clear()
                 }
                 else{
                     habits[editIndex] = habits[editIndex].copy(name = name)
@@ -67,11 +71,14 @@ class MainActivity : AppCompatActivity() {
                     showHabits()
                     messageText.text = "Edited: $name"
                     Log.d("HabitDebug", "Habit edited: $name, total: ${habits.size}")
-                    editingIndex = null
-                    addHabitButton.text = "Add"
+                    exitEditMode()
                 }
-                habitNameInput.text.clear()
             }
+        }
+
+        cancelButton.setOnClickListener {
+            exitEditMode()
+            messageText.text = "Edit Cancelled"
         }
     }
 
@@ -134,10 +141,8 @@ class MainActivity : AppCompatActivity() {
             deleteButton.setOnClickListener {
                 habits.removeAt(index)
                 storage.save(habits)
-                editingIndex = null
-                addHabitButton.text = "Add"
+                exitEditMode()
                 messageText.text = "Deleted: ${habit.name}"
-                habitNameInput.text.clear()
                 showHabits()
             }
 
@@ -147,6 +152,7 @@ class MainActivity : AppCompatActivity() {
                 habitNameInput.setText(habit.name)
                 editingIndex = index
                 addHabitButton.text = "Save"
+                cancelButton.visibility = View.VISIBLE
             }
 
             row.addView(editButton)
@@ -154,6 +160,13 @@ class MainActivity : AppCompatActivity() {
             row.addView(deleteButton)
             container.addView(row)
         }
+    }
+
+    private fun exitEditMode(){
+        editingIndex = null
+        addHabitButton.setText(R.string.add_habit)
+        cancelButton.visibility = View.GONE
+        habitNameInput.text.clear()
     }
 
 }
