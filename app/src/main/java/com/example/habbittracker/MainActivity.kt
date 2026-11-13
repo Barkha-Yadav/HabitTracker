@@ -14,6 +14,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 
 class MainActivity : AppCompatActivity() {
     private val habits = mutableListOf<Habit>()
@@ -103,10 +105,22 @@ class MainActivity : AppCompatActivity() {
             val deleteButton = Button(this)
             deleteButton.text = "Delete"
             deleteButton.setOnClickListener{
-                habits.removeAt(index)
-                storage.save(habits)
-                messageText.text = "Deleted: ${habit.name}"
-                showHabits()
+//                habits.removeAt(index)
+//                storage.save(habits)
+//                messageText.text = "Deleted: ${habit.name}"
+//                showHabits()
+                AlertDialog.Builder(this)
+                    .setTitle(R.string.delete_title)
+                    .setMessage(getString(R.string.delete_message, habit.name))
+                    .setPositiveButton(R.string.delete){_,_ ->
+                        habits.removeAt(index)
+                        storage.save(habits)
+//                        messageText.text = "Deleted: ${habit.name}"
+                        Toast.makeText(this,"Deleted: ${habit.name}", Toast.LENGTH_SHORT).show()
+                        showHabits()
+                    }
+                    .setNegativeButton(R.string.cancel,null)
+                    .show()
             }
 
             val editButton = Button(this)

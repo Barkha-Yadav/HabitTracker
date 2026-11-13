@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -55,9 +56,11 @@ class AddEditHabitActivity : AppCompatActivity() {
             else -> {
                 if(editIndex == -1){
                     habits.add(Habit(name))
+                    Toast.makeText(this,"Added: $name",Toast.LENGTH_SHORT).show()
                 }
                 else{
                     habits[editIndex] = habits[editIndex].copy(name=name)
+                    Toast.makeText(this,"Updated: $name",Toast.LENGTH_SHORT).show()
                 }
                 storage.save(habits)
                 finish()
