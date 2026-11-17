@@ -2,8 +2,18 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
     <color name="moss">#2F6F5E</color>
     <color name="mint">#DDEFE7</color>
-    <color name="paper">#F7F8F5</color>
-    <color name="ink">#1F2A2E</color>
+    <color name="paper">#FBF6FA</color> <!--soft cream background-->
+    <color name="ink">#2B1B4E</color> <!--deep purple text-->
+
+    <color name="purple_primary">#8A5CBF</color>
+    <color name="purple_dark">#4A2C7A</color>
+    <color name="purple_light">#E9DBFA</color>
+    <color name="purple_soft">#F3EBFC</color>
+    <color name="purple_stroke">#C9B3E6</color>
+    <color name="card_bg">#FFFFFF</color>
+    <color name="sage">#DCEBD6</color>
+    <color name="peach">#FBD9D2</color>
 </resources>

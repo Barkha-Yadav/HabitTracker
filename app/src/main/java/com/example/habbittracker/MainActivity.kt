@@ -1,6 +1,7 @@
 package com.example.habbittracker
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -16,6 +17,9 @@ import androidx.core.view.WindowInsetsCompat
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import android.view.LayoutInflater
+import android.widget.FrameLayout
+import android.widget.ImageButton
 
 class MainActivity : AppCompatActivity() {
     private val habits = mutableListOf<Habit>()
@@ -39,6 +43,10 @@ class MainActivity : AppCompatActivity() {
 
         addHabitButton.setOnClickListener {
             startActivity(Intent(this, AddEditHabitActivity::class.java))
+        }
+
+        findViewById<View>(R.id.addFab).setOnClickListener{
+           startActivity(Intent(this,AddEditHabitActivity::class.java))
         }
     }
 
@@ -73,25 +81,32 @@ class MainActivity : AppCompatActivity() {
     private fun showHabits(){
         val container = findViewById<LinearLayout>(R.id.habitListContainer)
         container.removeAllViews()
+
         if(habits.isEmpty()){
             val empty = TextView(this)
-            empty.text = "No habits yet! Add your first one!"
-            empty.setTextColor(ContextCompat.getColor(this,R.color.ink))
+            empty.setText("No habits yet! Add your first one!")
+            empty.setTextColor(ContextCompat.getColor(this,R.color.purple_primary))
+            empty.textSize = 16f
             container.addView(empty)
             return
         }
 
-        for((index,habit) in habits.withIndex()){
-            val row = LinearLayout(this)
-            row.orientation = LinearLayout.HORIZONTAL
+        val bubbleColors = listOf(R.color.purple_light, R.color.sage, R.color.peach)
+        val inflater = LayoutInflater.from(this)
 
-            val checkBox = CheckBox(this)
-            checkBox.text = habit.name
-            checkBox.textSize = 18f
-            checkBox.setTextColor(ContextCompat.getColor(this,R.color.ink))
+        for((index,habit) in habits.withIndex()){
+            val card = inflater.inflate(R.layout.item_habit, container, false)
+
+            val bubble = card.findViewById<FrameLayout>(R.id.iconBubble)
+            val nameText = card.findViewById<TextView>(R.id.habitName)
+            val checkBox = card.findViewById<CheckBox>(R.id.habitCheck)
+            val deleteButton = card.findViewById<ImageButton>(R.id.deleteButton)
+
+            val color = ContextCompat.getColor(this, bubbleColors[index % bubbleColors.size])
+            bubble.backgroundTintList = ColorStateList.valueOf(color)
+
+            nameText.text = habit.name
             checkBox.isChecked = habit.isCompleted
-            checkBox.setPadding(0,12,0,12)
-            checkBox.layoutParams = LinearLayout.LayoutParams(0,LinearLayout.LayoutParams.WRAP_CONTENT,1f)
 
             checkBox.setOnClickListener{
                 habits[index] = habit.copy(
@@ -102,39 +117,27 @@ class MainActivity : AppCompatActivity() {
                 showHabits()
             }
 
-            val deleteButton = Button(this)
-            deleteButton.text = "Delete"
             deleteButton.setOnClickListener{
-//                habits.removeAt(index)
-//                storage.save(habits)
-//                messageText.text = "Deleted: ${habit.name}"
-//                showHabits()
                 AlertDialog.Builder(this)
                     .setTitle(R.string.delete_title)
                     .setMessage(getString(R.string.delete_message, habit.name))
-                    .setPositiveButton(R.string.delete){_,_ ->
+                    .setPositiveButton(R.string.delete){_, _ ->
                         habits.removeAt(index)
                         storage.save(habits)
-//                        messageText.text = "Deleted: ${habit.name}"
-                        Toast.makeText(this,"Deleted: ${habit.name}", Toast.LENGTH_SHORT).show()
+                        messageText.text = "Deleted: ${habit.name}"
                         showHabits()
                     }
                     .setNegativeButton(R.string.cancel,null)
                     .show()
             }
 
-            val editButton = Button(this)
-            editButton.text = "Edit"
-            editButton.setOnClickListener{
+            card.setOnClickListener{
                 val intent = Intent(this, AddEditHabitActivity::class.java)
-                intent.putExtra(AddEditHabitActivity.EXTRA_HABIT_INDEX, index)
+                intent.putExtra(AddEditHabitActivity.EXTRA_HABIT_INDEX,  index)
                 startActivity(intent)
             }
 
-            row.addView(editButton)
-            row.addView(checkBox)
-            row.addView(deleteButton)
-            container.addView(row)
+            container.addView(card)
         }
     }
 }
